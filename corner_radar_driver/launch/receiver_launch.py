@@ -82,4 +82,5 @@ def generate_launch_description():
         parameters=[sensors_config_file, receiver_params],
         output="screen",
     )
-    return LaunchDescription(static_tf_nodes + [receiver_node])
+    # return LaunchDescription(static_tf_nodes + [receiver_node])
+    return LaunchDescription(receiver_node)
