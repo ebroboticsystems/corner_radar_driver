@@ -83,4 +83,4 @@ def generate_launch_description():
         output="screen",
     )
     # return LaunchDescription(static_tf_nodes + [receiver_node])
-    return LaunchDescription(receiver_node)
+    return LaunchDescription([receiver_node])
