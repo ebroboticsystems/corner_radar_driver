@@ -18,7 +18,6 @@
 #include "diagnostic_msgs/msg/diagnostic_status.hpp"
 #include "off_highway_can/helper.hpp"
 
-
 namespace corner_radar_driver
 {
 
