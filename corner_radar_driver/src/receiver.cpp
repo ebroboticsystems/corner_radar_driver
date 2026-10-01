@@ -135,7 +135,7 @@ void Receiver::process(std_msgs::msg::Header header, const FrameId & id, Message
   using off_highway_can::auto_static_cast;
 
   auto id_suffix = static_cast<uint16_t>(id & 0xFF);
-  header.frame_id = id_to_sensor_.at(id_suffix);
+  header.frame_id = id_to_sensor_.at(id_suffix); // The CAN ID is mapped to the sensor frame, and each stored location gets that frame ID
   location_base_id_ = sensors_.at(header.frame_id).can_fd_source_address;
 
   int32_t location_frame_id = (id - location_base_id_) / 256;
@@ -155,7 +155,7 @@ void Receiver::process(std_msgs::msg::Header header, const FrameId & id, Message
     uint16_t location_id_in_locations = location_frame_id + index;
     l.id = location_id_in_locations;
     l.header.stamp = now();
-    l.header.frame_id = header.frame_id;
+    l.header.frame_id = header.frame_id; //each stored location gets that frame ID - our frame is sensor1
 
     // Extract and cast signal values from the message to the location structure
     auto_static_cast(l.crc, message.signals["crc_index"].value);
@@ -316,7 +316,7 @@ void Receiver::process_location(
   pcl::PointCloud<PclPointLocation> & locations_pcl,
   std::shared_ptr<tf2_ros::Buffer> tf_buffer)
 {
-  try {
+  try { // The driver looks up the transform from sensor1 to base_link
     geometry_msgs::msg::TransformStamped transform_stamped =
       tf_buffer->lookupTransform("base_link", frame_id, tf2::TimePointZero);
 
@@ -336,7 +336,7 @@ void Receiver::process_location(
     double roll, pitch, yaw;
     tf2::Matrix3x3(q).getRPY(roll, pitch, yaw);
 
-    // Apply the transform to the point
+    // Apply the transform to each Cartesian point
     tf2::Vector3 point(location.x, location.y, location.z);
     tf2::Vector3 transformed_point = tf2::Transform(q, tf2::Vector3(tx, ty, tz)) * point;
 
@@ -362,7 +362,7 @@ void Receiver::publish_locations()
 
   Locations msg;
   msg.header.stamp = now();
-  msg.header.frame_id = node_frame_id_;
+  msg.header.frame_id = node_frame_id_; // The output cloud is labeled with node_frame_id_, configured as base_link, and then published
   for (const auto & location : locations_) {
     if (location) {
       msg.locations.push_back(*location);
