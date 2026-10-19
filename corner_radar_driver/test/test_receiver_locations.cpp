@@ -195,7 +195,7 @@ protected:
     std::vector<rclcpp::Parameter> params = {
       rclcpp::Parameter("name", "corner_radar_driver_receiver"),
       rclcpp::Parameter("allowed_age", kMaxLocations / kPublishFrequency),
-      rclcpp::Parameter("node_frame_id", "base_link"),
+      rclcpp::Parameter("node_frame_id", "radar_link"),
       rclcpp::Parameter("sensors.sensor1.active", static_cast<bool>(sensors["sensor1"].active)),
       rclcpp::Parameter(
         "sensors.sensor1.max_number_locations",
@@ -236,7 +236,7 @@ protected:
     publish_static_transforms(sensors);
 
     ASSERT_EQ(node_->get_parameter("allowed_age").as_double(), kMaxLocations / kPublishFrequency);
-    ASSERT_EQ(node_->get_parameter("node_frame_id").as_string(), "base_link");
+    ASSERT_EQ(node_->get_parameter("node_frame_id").as_string(), "radar_link");
 
     pcl_subscriber_ = std::make_shared<PclSubscriber>();
     locations_subscriber_ = std::make_shared<LocationsSubscriber>();
@@ -279,7 +279,7 @@ void TestRadarReceiver::publish_static_transforms(const std::map<std::string, Se
     if (sensor_info.active) {
       geometry_msgs::msg::TransformStamped transform_stamped;
       transform_stamped.header.stamp = rclcpp::Clock().now();
-      transform_stamped.header.frame_id = "base_link";
+      transform_stamped.header.frame_id = "radar_link";
       transform_stamped.child_frame_id = sensor_pair.first;
       transform_stamped.transform.translation.x = sensor_info.mounting_position.xt;
       transform_stamped.transform.translation.y = sensor_info.mounting_position.yt;

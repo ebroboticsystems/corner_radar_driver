@@ -12,4 +12,4 @@ corner_radar_driver_receiver:
     timeout: 0.2
 
     # TF frame id for all published messages of the receiver
-    node_frame_id: base_link
+    node_frame_id: radar_link

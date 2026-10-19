@@ -67,7 +67,7 @@ def generate_launch_description():
                         str(float(pos["yaw"])),
                         str(float(pos["pitch"])),
                         str(float(pos["roll"])),
-                        "base_link",
+                        "radar_link",
                         sensor_name,
                     ],
                     output="screen",

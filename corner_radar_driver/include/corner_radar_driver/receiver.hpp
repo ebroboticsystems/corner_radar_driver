@@ -134,11 +134,11 @@ private:
   void declare_and_get_parameters();
 
   /**
-   * @brief Transforms a point location from a given frame to the "base_link"
+   * @brief Transforms a point location from a given frame to the "radar_link"
    * frame and adds it to a point cloud.
    *
    * This function looks up the transform between the specified frame and
-   * "base_link" using the provided tf2 buffer. It applies the transformation
+   * "radar_link" using the provided tf2 buffer. It applies the transformation
    * (translation and rotation) to the input point location, updates its
    * coordinates, and appends the transformed point to the provided point cloud.
    * If the transform is not available, an error is logged.

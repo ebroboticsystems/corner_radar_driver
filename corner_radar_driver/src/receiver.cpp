@@ -316,9 +316,9 @@ void Receiver::process_location(
   pcl::PointCloud<PclPointLocation> & locations_pcl,
   std::shared_ptr<tf2_ros::Buffer> tf_buffer)
 {
-  try { // The driver looks up the transform from sensor1 to base_link
+  try { // The driver looks up the transform from sensor1 to radar_link
     geometry_msgs::msg::TransformStamped transform_stamped =
-      tf_buffer->lookupTransform("base_link", frame_id, tf2::TimePointZero);
+      tf_buffer->lookupTransform("radar_link", frame_id, tf2::TimePointZero);
 
     // Extract translation
     double tx = transform_stamped.transform.translation.x;
@@ -349,7 +349,7 @@ void Receiver::process_location(
     locations_pcl.emplace_back(transformed_location);
   } catch (const tf2::TransformException & ex) {
     RCLCPP_ERROR(
-      this->get_logger(), "Transform from base_link to %s is not available: %s",
+      this->get_logger(), "Transform from radar_link to %s is not available: %s",
       frame_id.c_str(), ex.what());
   }
 }
@@ -362,7 +362,7 @@ void Receiver::publish_locations()
 
   Locations msg;
   msg.header.stamp = now();
-  msg.header.frame_id = node_frame_id_; // The output cloud is labeled with node_frame_id_, configured as base_link, and then published
+  msg.header.frame_id = node_frame_id_; // The output cloud is labeled with node_frame_id_, configured as radar_link, and then published
   for (const auto & location : locations_) {
     if (location) {
       msg.locations.push_back(*location);
